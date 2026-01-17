@@ -3,7 +3,7 @@
 A lightweight desktop app for recording and replaying mouse and keyboard macros on your own machine.
 
 ## Features
-- Record mouse clicks, scrolls, and keyboard press/release events with precise timing.
+- Record mouse movements, clicks, scrolls, and keyboard press/release events with precise timing.
 - Play back once, repeat N times, or loop for a duration.
 - Save/load readable JSON macros in the `macros/` folder.
 - Clear status indicator and a hard kill switch (ESC) to abort playback.
@@ -11,12 +11,13 @@ A lightweight desktop app for recording and replaying mouse and keyboard macros 
 ## Requirements
 - Python 3.9+
 - `pynput`
+- `customtkinter`
 
 ## Setup
 1. Install dependencies:
 
 ```bash
-pip install pynput
+pip install pynput customtkinter
 ```
 
 2. Run the app:
