@@ -1,6 +1,6 @@
 # Macro Maker (Local Only)
 
-A lightweight desktop app for recording and replaying mouse and keyboard macros on your own machine.
+A lightweight desktop app for recording and replaying mouse and keyboard macros on your own machine. Made as part of my journey of learning Python.
 
 ## Features
 - Record mouse movements, clicks, scrolls, and keyboard press/release events with precise timing.
