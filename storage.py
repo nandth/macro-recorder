@@ -31,6 +31,8 @@ def _validate_events(raw_events):
         event_type = raw.get("type")
         if event_type == "mouse_click":
             event = _validate_mouse_click(raw)
+        elif event_type == "mouse_move":
+            event = _validate_mouse_move(raw)
         elif event_type == "mouse_scroll":
             event = _validate_mouse_scroll(raw)
         elif event_type == "key":
@@ -87,6 +89,22 @@ def _validate_mouse_click(raw):
         "y": y_value,
         "button": button,
         "pressed": pressed_value,
+    }
+
+
+def _validate_mouse_move(raw):
+    t_value = _validate_base(raw)
+    if t_value is None:
+        return None
+    x_value = _coerce_int(raw.get("x"))
+    y_value = _coerce_int(raw.get("y"))
+    if x_value is None or y_value is None:
+        return None
+    return {
+        "t": t_value,
+        "type": "mouse_move",
+        "x": x_value,
+        "y": y_value,
     }
 
 

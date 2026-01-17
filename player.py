@@ -89,6 +89,8 @@ class Player:
                 self._mouse.press(button)
             else:
                 self._mouse.release(button)
+        elif event_type == "mouse_move":
+            self._mouse.position = (event.get("x", 0), event.get("y", 0))
         elif event_type == "mouse_scroll":
             self._mouse.position = (event.get("x", 0), event.get("y", 0))
             self._mouse.scroll(event.get("dx", 0), event.get("dy", 0))

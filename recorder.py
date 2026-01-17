@@ -2,6 +2,7 @@ import time
 import threading
 from pynput import mouse, keyboard
 
+from constants import MOVE_MIN_DISTANCE, MOVE_MIN_INTERVAL
 from models import serialize_button, serialize_key
 
 
@@ -12,6 +13,8 @@ class Recorder:
         self._mouse_listener = None
         self._keyboard_listener = None
         self._events = []
+        self._last_move_time = None
+        self._last_move_pos = None
         self.is_recording = False
 
     def start(self) -> None:
@@ -19,9 +22,12 @@ class Recorder:
             return
         self._events = []
         self._start_time = time.monotonic()
+        self._last_move_time = None
+        self._last_move_pos = None
         self.is_recording = True
 
         self._mouse_listener = mouse.Listener(
+            on_move=self._on_move,
             on_click=self._on_click,
             on_scroll=self._on_scroll,
         )
@@ -62,6 +68,24 @@ class Recorder:
             "y": int(y),
             "button": serialize_button(button),
             "pressed": bool(pressed),
+        }
+        self._append_event(event)
+
+    def _on_move(self, x, y):
+        timestamp = self._timestamp()
+        if self._last_move_time is not None:
+            elapsed = timestamp - self._last_move_time
+            last_x, last_y = self._last_move_pos
+            distance = abs(int(x) - last_x) + abs(int(y) - last_y)
+            if elapsed < MOVE_MIN_INTERVAL and distance < MOVE_MIN_DISTANCE:
+                return
+        self._last_move_time = timestamp
+        self._last_move_pos = (int(x), int(y))
+        event = {
+            "t": timestamp,
+            "type": "mouse_move",
+            "x": int(x),
+            "y": int(y),
         }
         self._append_event(event)
 

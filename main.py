@@ -1,5 +1,7 @@
 import threading
 import tkinter as tk
+import sys
+import ctypes
 from tkinter import filedialog, messagebox
 from pathlib import Path
 
@@ -346,6 +348,14 @@ class MacroApp:
 
 
 if __name__ == "__main__":
+    if sys.platform.startswith("win"):
+        try:
+            ctypes.windll.shcore.SetProcessDpiAwareness(2)
+        except (AttributeError, OSError):
+            try:
+                ctypes.windll.user32.SetProcessDPIAware()
+            except (AttributeError, OSError):
+                pass
     root = tk.Tk()
     app = MacroApp(root)
     root.mainloop()
