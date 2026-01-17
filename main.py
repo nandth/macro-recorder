@@ -26,7 +26,7 @@ class MacroApp:
         self.root.title(APP_TITLE)
         self.root.geometry("520x380")
         self.root.resizable(False, False)
-        self.root.configure(bg="#101214")
+        self.root.configure(bg="#0E1116")
 
         self.recorder = Recorder()
         self.player = Player()
@@ -42,16 +42,23 @@ class MacroApp:
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
 
     def _build_ui(self) -> None:
-        container = tk.Frame(self.root, padx=12, pady=10, bg="#101214")
-        container.pack(fill="both", expand=True)
+        container_canvas, container = self._create_card(
+            self.root,
+            width=496,
+            height=356,
+            radius=18,
+            card_bg="#151A21",
+            canvas_bg="#0E1116",
+        )
+        container_canvas.pack(padx=12, pady=12)
 
         self.status_var = tk.StringVar(value=STATUS_READY)
         status_label = tk.Label(
             container,
             textvariable=self.status_var,
-            font=("Segoe UI", 16, "bold"),
-            fg="#E6E6E6",
-            bg="#101214",
+            font=("Segoe UI", 16),
+            fg="#E8EAED",
+            bg="#151A21",
         )
         status_label.pack(pady=(0, 8))
 
@@ -60,66 +67,52 @@ class MacroApp:
             container,
             textvariable=self.event_count_var,
             font=("Segoe UI", 10),
-            fg="#B9C0C7",
-            bg="#101214",
+            fg="#9AA4AF",
+            bg="#151A21",
         )
         event_label.pack(pady=(0, 8))
 
-        button_frame = tk.Frame(container, bg="#101214")
+        button_frame = tk.Frame(container, bg="#151A21")
         button_frame.pack(pady=(0, 10))
 
-        btn_font = ("Segoe UI", 11, "bold")
+        btn_font = ("Segoe UI", 11)
         btn_style = {
-            "bg": "#1F2328",
-            "fg": "#E6E6E6",
-            "activebackground": "#2B3036",
+            "bg": "#2A3038",
+            "fg": "#E8EAED",
+            "activebackground": "#343B45",
             "activeforeground": "#FFFFFF",
-            "relief": "flat",
-            "bd": 0,
-            "highlightthickness": 0,
+            "font": btn_font,
+            "radius": 10,
+            "width": 92,
+            "height": 30,
         }
-        self.record_btn = tk.Button(
+        self.record_btn = RoundedButton(
             button_frame,
             text="Record",
-            width=9,
-            height=1,
-            font=btn_font,
             command=self.start_recording,
             **btn_style,
         )
-        self.stop_btn = tk.Button(
+        self.stop_btn = RoundedButton(
             button_frame,
             text="Stop",
-            width=9,
-            height=1,
-            font=btn_font,
             command=self.stop_action,
             **btn_style,
         )
-        self.play_btn = tk.Button(
+        self.play_btn = RoundedButton(
             button_frame,
             text="Play",
-            width=9,
-            height=1,
-            font=btn_font,
             command=self.play_macro,
             **btn_style,
         )
-        self.save_btn = tk.Button(
+        self.save_btn = RoundedButton(
             button_frame,
             text="Save",
-            width=9,
-            height=1,
-            font=btn_font,
             command=self.save_macro_dialog,
             **btn_style,
         )
-        self.load_btn = tk.Button(
+        self.load_btn = RoundedButton(
             button_frame,
             text="Load",
-            width=9,
-            height=1,
-            font=btn_font,
             command=self.load_macro_dialog,
             **btn_style,
         )
@@ -130,17 +123,27 @@ class MacroApp:
         self.save_btn.grid(row=1, column=0, padx=5, pady=4)
         self.load_btn.grid(row=1, column=1, padx=5, pady=4)
 
-        options_frame = tk.LabelFrame(
+        options_canvas, options_card = self._create_card(
             container,
-            text="Playback",
-            padx=10,
-            pady=6,
-            bg="#101214",
-            fg="#B9C0C7",
-            font=("Segoe UI", 10, "bold"),
-            labelanchor="n",
+            width=456,
+            height=118,
+            radius=14,
+            card_bg="#1A2028",
+            canvas_bg="#151A21",
         )
-        options_frame.pack(fill="x", pady=(0, 10))
+        options_canvas.pack(pady=(0, 10))
+
+        options_title = tk.Label(
+            options_card,
+            text="Playback",
+            fg="#C7D0D9",
+            bg="#1A2028",
+            font=("Segoe UI", 10),
+        )
+        options_title.pack(anchor="w", pady=(2, 6), padx=6)
+
+        options_frame = tk.Frame(options_card, bg="#1A2028")
+        options_frame.pack(fill="x", padx=4)
 
         self.play_mode = tk.StringVar(value="once")
         tk.Radiobutton(
@@ -148,11 +151,11 @@ class MacroApp:
             text="Play once",
             value="once",
             variable=self.play_mode,
-            bg="#101214",
-            fg="#E6E6E6",
-            activebackground="#101214",
+            bg="#1A2028",
+            fg="#E8EAED",
+            activebackground="#1A2028",
             activeforeground="#FFFFFF",
-            selectcolor="#1F2328",
+            selectcolor="#2A3038",
             font=("Segoe UI", 10),
         ).grid(row=0, column=0, sticky="w")
         tk.Radiobutton(
@@ -160,11 +163,11 @@ class MacroApp:
             text="Repeat N times",
             value="repeat",
             variable=self.play_mode,
-            bg="#101214",
-            fg="#E6E6E6",
-            activebackground="#101214",
+            bg="#1A2028",
+            fg="#E8EAED",
+            activebackground="#1A2028",
             activeforeground="#FFFFFF",
-            selectcolor="#1F2328",
+            selectcolor="#2A3038",
             font=("Segoe UI", 10),
         ).grid(row=1, column=0, sticky="w")
         tk.Radiobutton(
@@ -172,11 +175,11 @@ class MacroApp:
             text="Loop for duration (seconds)",
             value="loop",
             variable=self.play_mode,
-            bg="#101214",
-            fg="#E6E6E6",
-            activebackground="#101214",
+            bg="#1A2028",
+            fg="#E8EAED",
+            activebackground="#1A2028",
             activeforeground="#FFFFFF",
-            selectcolor="#1F2328",
+            selectcolor="#2A3038",
             font=("Segoe UI", 10),
         ).grid(row=2, column=0, sticky="w")
 
@@ -185,9 +188,9 @@ class MacroApp:
             options_frame,
             textvariable=self.repeat_var,
             width=6,
-            bg="#1F2328",
-            fg="#E6E6E6",
-            insertbackground="#E6E6E6",
+            bg="#242B33",
+            fg="#E8EAED",
+            insertbackground="#E8EAED",
             relief="flat",
         )
         repeat_entry.grid(row=1, column=1, padx=(10, 0), sticky="w")
@@ -197,9 +200,9 @@ class MacroApp:
             options_frame,
             textvariable=self.loop_var,
             width=6,
-            bg="#1F2328",
-            fg="#E6E6E6",
-            insertbackground="#E6E6E6",
+            bg="#242B33",
+            fg="#E8EAED",
+            insertbackground="#E8EAED",
             relief="flat",
         )
         loop_entry.grid(row=2, column=1, padx=(10, 0), sticky="w")
@@ -207,9 +210,9 @@ class MacroApp:
         warning_label = tk.Label(
             container,
             text=WARNING_TEXT,
-            fg="#FF7B72",
-            bg="#101214",
-            font=("Segoe UI", 9, "bold"),
+            fg="#F3A8A0",
+            bg="#151A21",
+            font=("Segoe UI", 9),
             wraplength=460,
             justify="center",
         )
@@ -219,8 +222,8 @@ class MacroApp:
             container,
             text=KILL_SWITCH_TEXT,
             font=("Segoe UI", 9),
-            fg="#B9C0C7",
-            bg="#101214",
+            fg="#9AA4AF",
+            bg="#151A21",
         )
         kill_label.pack(pady=(0, 4))
 
@@ -345,6 +348,109 @@ class MacroApp:
             return parsed if parsed > 0 else default
         except ValueError:
             return default
+
+    def _create_card(self, parent, width, height, radius, card_bg, canvas_bg):
+        canvas = tk.Canvas(
+            parent,
+            width=width,
+            height=height,
+            bg=canvas_bg,
+            highlightthickness=0,
+            bd=0,
+        )
+        self._draw_rounded_rect(canvas, 0, 0, width, height, radius, card_bg)
+        frame = tk.Frame(canvas, bg=card_bg)
+        canvas.create_window((width // 2, height // 2), window=frame, width=width - 18, height=height - 18)
+        return canvas, frame
+
+    def _draw_rounded_rect(self, canvas, x1, y1, x2, y2, radius, fill):
+        points = [
+            x1 + radius, y1,
+            x2 - radius, y1,
+            x2, y1,
+            x2, y1 + radius,
+            x2, y2 - radius,
+            x2, y2,
+            x2 - radius, y2,
+            x1 + radius, y2,
+            x1, y2,
+            x1, y2 - radius,
+            x1, y1 + radius,
+            x1, y1,
+        ]
+        canvas.create_polygon(points, smooth=True, fill=fill, outline=fill)
+
+
+class RoundedButton(tk.Canvas):
+    def __init__(self, parent, text, command, width, height, radius, bg, fg, activebackground, activeforeground, font):
+        super().__init__(parent, width=width, height=height, bg=parent["bg"], highlightthickness=0, bd=0)
+        self._bg = bg
+        self._fg = fg
+        self._active_bg = activebackground
+        self._active_fg = activeforeground
+        self._command = command
+        self._radius = radius
+        self._width = width
+        self._height = height
+        self._enabled = True
+        self._rect = self._draw(radius, bg)
+        self._label = self.create_text(width // 2, height // 2, text=text, fill=fg, font=font)
+        self.bind("<Button-1>", self._on_click)
+        self.bind("<Enter>", self._on_enter)
+        self.bind("<Leave>", self._on_leave)
+        self.bind("<ButtonRelease-1>", self._on_release)
+
+    def config(self, **kwargs):
+        if "state" in kwargs:
+            state = kwargs["state"]
+            if state == "disabled":
+                self._enabled = False
+                self.itemconfigure(self._rect, fill="#1F252C", outline="#1F252C")
+                self.itemconfigure(self._label, fill="#6C747D")
+                self.unbind("<Button-1>")
+            else:
+                self._enabled = True
+                self.itemconfigure(self._rect, fill=self._bg, outline=self._bg)
+                self.itemconfigure(self._label, fill=self._fg)
+                self.bind("<Button-1>", self._on_click)
+
+    def _draw(self, radius, fill):
+        points = [
+            radius, 0,
+            self._width - radius, 0,
+            self._width, 0,
+            self._width, radius,
+            self._width, self._height - radius,
+            self._width, self._height,
+            self._width - radius, self._height,
+            radius, self._height,
+            0, self._height,
+            0, self._height - radius,
+            0, radius,
+            0, 0,
+        ]
+        return self.create_polygon(points, smooth=True, fill=fill, outline=fill)
+
+    def _on_click(self, _event):
+        if not self._enabled:
+            return
+        if callable(self._command):
+            self._command()
+
+    def _on_enter(self, _event):
+        if not self._enabled:
+            return
+        self.itemconfigure(self._rect, fill=self._active_bg, outline=self._active_bg)
+        self.itemconfigure(self._label, fill=self._active_fg)
+
+    def _on_leave(self, _event):
+        if not self._enabled:
+            return
+        self.itemconfigure(self._rect, fill=self._bg, outline=self._bg)
+        self.itemconfigure(self._label, fill=self._fg)
+
+    def _on_release(self, _event):
+        self._on_enter(_event)
 
 
 if __name__ == "__main__":
