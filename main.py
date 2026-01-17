@@ -12,7 +12,6 @@ from constants import (
     STATUS_READY,
     STATUS_RECORDING,
     STATUS_PLAYING,
-    WARNING_TEXT,
     KILL_SWITCH_TEXT,
     DEFAULT_REPEAT,
     DEFAULT_LOOP_SECONDS,
@@ -193,16 +192,6 @@ class MacroApp:
             border_width=1,
         )
         loop_entry.grid(row=2, column=1, padx=(10, 0), sticky="w")
-
-        warning_label = ctk.CTkLabel(
-            container,
-            text=WARNING_TEXT,
-            text_color="#F3A8A0",
-            font=ctk.CTkFont(family="Segoe UI", size=9),
-            wraplength=460,
-            justify="center",
-        )
-        warning_label.pack(pady=(0, 4))
 
         kill_label = ctk.CTkLabel(
             container,
